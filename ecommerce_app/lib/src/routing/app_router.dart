@@ -6,7 +6,18 @@ import 'package:ecommerce_app/src/features/sign_in/email_password_sign_in_state.
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../features/not_found/not_found_screen.dart';
+import '../features/product_page/product_screen.dart';
 import '../features/products_list/products_list_screen.dart';
+
+enum AppRoute {
+  home,
+  product,
+  cart,
+  orders,
+  account,
+  signIn,
+}
 
 final goRouter = GoRouter(
   initialLocation: "/",
@@ -14,10 +25,20 @@ final goRouter = GoRouter(
   routes: [
     GoRoute(
       path: "/",
+      name: AppRoute.home.name,
       builder: (context, state) => const ProductsListScreen(),
       routes: [
         GoRoute(
+          path: 'product/:id',
+          name: AppRoute.product.name,
+          builder: (context, state) {
+            final productId = state.pathParameters['id']!;
+            return ProductScreen(productId: productId);
+          },
+        ),
+        GoRoute(
           path: "cart",
+          name: AppRoute.cart.name,
           pageBuilder: (context, state) => MaterialPage(
             key: state.pageKey,
             fullscreenDialog: true,
@@ -26,6 +47,7 @@ final goRouter = GoRouter(
         ),
         GoRoute(
           path: "orders",
+          name: AppRoute.orders.name,
           pageBuilder: (context, state) => MaterialPage(
             key: state.pageKey,
             fullscreenDialog: true,
@@ -34,6 +56,7 @@ final goRouter = GoRouter(
         ),
         GoRoute(
           path: "account",
+          name: AppRoute.account.name,
           pageBuilder: (context, state) => MaterialPage(
             key: state.pageKey,
             fullscreenDialog: true,
@@ -42,6 +65,7 @@ final goRouter = GoRouter(
         ),
         GoRoute(
           path: "signIn",
+          name: AppRoute.signIn.name,
           pageBuilder: (context, state) => MaterialPage(
             key: state.pageKey,
             fullscreenDialog: true,
@@ -53,4 +77,5 @@ final goRouter = GoRouter(
       ],
     ),
   ],
+  errorBuilder: (context, state) => const NotFoundScreen(),
 );
