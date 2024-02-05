@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../constants/test_products.dart';
@@ -37,12 +40,29 @@ final productsRepositoryProvider = Provider<FakeProductsRepository>((ref) {
   return FakeProductsRepository();
 });
 
-final productListStreamProvider = StreamProvider<List<Product>>((ref) {
+final productListStreamProvider =
+    StreamProvider.autoDispose<List<Product>>((ref) {
   final productRepository = ref.watch(productsRepositoryProvider);
   return productRepository.watchProductsList();
 });
 
-final productListFutureProvider = FutureProvider<List<Product>>((ref) {
+final productListFutureProvider =
+    FutureProvider.autoDispose<List<Product>>((ref) {
   final productRepository = ref.watch(productsRepositoryProvider);
   return productRepository.fetchProductList();
+});
+
+final productProvider =
+    StreamProvider.autoDispose.family<Product?, String>((ref, id) {
+  debugPrint('created productProvider($id)');
+  // keep the provider alive when it's no longer used
+  final link = ref.keepAlive();
+  // use a timer to dispose it after 10 seconds
+  final timer = Timer(const Duration(seconds: 10), () {
+    link.close();
+  });
+  // make sure the timer is cancelled when the provider state is disposed
+  ref.onDispose(() => timer.cancel());
+  final productRepository = ref.watch(productsRepositoryProvider);
+  return productRepository.watchProduct(id);
 });
