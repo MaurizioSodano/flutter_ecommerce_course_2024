@@ -16,4 +16,17 @@ class FakeProductsRepository {
       return null;
     }
   }
+
+  Future<List<Product>> fetchProductList() {
+    return Future.value(_products);
+  }
+
+  Stream<List<Product>> watchProductList() {
+    return Stream.value(_products);
+  }
+
+  Stream<Product?> watchProduct(String id) {
+    return watchProductList()
+        .map((products) => products.firstWhere((product) => product.id == id));
+  }
 }
