@@ -17,6 +17,8 @@ import 'package:ecommerce_app/src/constants/app_sizes.dart';
 import 'package:ecommerce_app/src/features/products/domain/product.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../common_widgets/async_value_widget.dart';
+
 /// Shows the product page for a given product ID.
 class ProductScreen extends StatelessWidget {
   const ProductScreen({super.key, required this.productId});
@@ -30,7 +32,8 @@ class ProductScreen extends StatelessWidget {
         builder: (context, ref, _) {
           final productValue = ref.watch(productProvider(productId));
 
-          return productValue.when(
+          return AsyncValueWidget<Product?>(
+            value: productValue,
             data: (product) => product == null
                 ? EmptyPlaceholderWidget(
                     message: 'Product not found'.hardcoded,
@@ -44,10 +47,6 @@ class ProductScreen extends StatelessWidget {
                       ProductReviewsList(productId: productId),
                     ],
                   ),
-            error: (e, st) => Center(child: ErrorMessageWidget(e.toString())),
-            loading: () => const Center(
-              child: CircularProgressIndicator(),
-            ),
           );
         },
       ),
