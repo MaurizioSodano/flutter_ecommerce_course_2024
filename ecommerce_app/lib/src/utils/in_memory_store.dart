@@ -15,7 +15,7 @@ class InMemoryStore<T> {
   T get value => _subject.value;
 
   ///setting the value will cause the stream to emit a new event
-  set value(T value) => _subject;
+ set value(T value) => _subject.add(value);
 
   /// Don't forget to call this when done
   void close() => _subject.close();
