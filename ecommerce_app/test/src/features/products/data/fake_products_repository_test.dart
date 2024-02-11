@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   FakeProductsRepository makeProductsRepository() => FakeProductsRepository(
-      // addDelay: false,
+        addDelay: false,
       );
   group('FakeProductsRepository', () {
     test('getProductsList returns global list', () {
