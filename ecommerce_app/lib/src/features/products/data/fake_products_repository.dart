@@ -8,7 +8,7 @@ import '../domain/product.dart';
 
 class FakeProductsRepository {
   final List<Product> _products = kTestProducts;
-  List<Product> getProductList() {
+  List<Product> getProductsList() {
     return _products;
   }
 
