@@ -27,5 +27,43 @@ void main() {
       expect(authRepository.currentUser, testUser);
       expect(authRepository.authStateChanges(), emits(testUser));
     });
+    test('currentUser is null after registration', () async {
+      final authRepository = makeAuthRepository();
+      await authRepository.createUserWithEmailAndPassword(
+          testEmail, testPassword);
+      // in this example, we expect first
+      expect(authRepository.currentUser, testUser);
+      // and then we call the method under test
+
+      expect(
+        authRepository.authStateChanges(),
+        emits(testUser),
+      );
+    });
+    test('currentUser is null after sign out', () async {
+      final authRepository = makeAuthRepository();
+      await authRepository.signInWithEmailAndPassword(testEmail, testPassword);
+      // in this example, we expect first
+      expect(
+        authRepository.authStateChanges(),
+        emitsInOrder([
+          testUser, // latest value from signInWithEmailAndPassword()
+          null, // upcoming value from signOut()
+        ]),
+      );
+      // and then we call the method under test
+      await authRepository.signOut();
+      expect(authRepository.currentUser, null);
+    });
+
+    test('sign in after dispose throws exception', () {
+      final authRepository = makeAuthRepository();
+      authRepository.dispose();
+
+      expect(
+          () => authRepository.signInWithEmailAndPassword(
+              testEmail, testPassword),
+          throwsStateError);
+    });
   });
 }
