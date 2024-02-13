@@ -1,0 +1,9 @@
+{
+    "cSpell.words": [
+        "ecommerce",
+        "riverpod"
+    ],
+    "flutter-coverage.coverageFilePaths": [
+        "ecommerce_app/coverage"
+    ]
+}
