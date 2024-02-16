@@ -4,8 +4,8 @@ import 'package:integration_test/integration_test.dart';
 import '../test/src/robot.dart';
 
 void main() {
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   testWidgets('Sign in and sign out flow', (tester) async {
-    IntegrationTestWidgetsFlutterBinding.ensureInitialized();
     final r = Robot(tester);
     await r.pumpMyApp();
 
