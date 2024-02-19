@@ -19,6 +19,9 @@ dependencies:
   go_router: ^13.1.0
   flutter_riverpod: ^2.4.10
   rxdart: ^0.27.7
+  sembast: ^3.6.0
+  sembast_web: ^2.2.0
+  path_provider: ^2.1.2
 
 dev_dependencies:
   flutter_test:
