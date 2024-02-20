@@ -9,63 +9,54 @@ import '../domain/cart.dart';
 import '../domain/item.dart';
 
 class CartService {
-  CartService(
-      {required this.authRepository,
-      required this.localCartRepository,
-      required this.remoteCartRepository});
-
-  final AuthRepository authRepository;
-  final LocalCartRepository localCartRepository;
-  final RemoteCartRepository remoteCartRepository;
+  CartService(this.ref);
+  final Ref ref;
 
   /// fetch the cart from the local or remote repository
   /// depending on the user auth state
   Future<Cart> _fetchCart() {
-    final user = authRepository.currentUser;
+    final user = ref.read(authRepositoryProvider).currentUser;
     if (user != null) {
-      return remoteCartRepository.fetchCart(user.uid);
+      return ref.read(remoteCartRepositoryProvider).fetchCart(user.uid);
     } else {
-      return localCartRepository.fetchCart();
+      return ref.read(localCartRepositoryProvider).fetchCart();
     }
   }
 
   /// save the cart to the local or remote repository
   /// depending on the user auth state
   Future<void> _setCart(Cart cart) async {
-    final user = authRepository.currentUser;
+    final user = ref.read(authRepositoryProvider).currentUser;
     if (user != null) {
-      await remoteCartRepository.setCart(user.uid, cart);
+      await ref.read(remoteCartRepositoryProvider).setCart(user.uid, cart);
     } else {
-      await localCartRepository.setCart(cart);
+      await ref.read(localCartRepositoryProvider).setCart(cart);
     }
   }
 
   /// sets an item in the local or remote cart depending on the user auth state
-Future<void> setItem(Item item) async {
-  final cart = await _fetchCart();
-  final updated = cart.addItem(item);
-  await _setCart(updated);
-}
- 
-/// adds an item in the local or remote cart depending on the user auth state
-Future<void> addItem(Item item) async {
-  final cart = await _fetchCart();
-  final updated = cart.addItem(item);
-  await _setCart(updated);
-}
- 
-/// removes an item from the local or remote cart depending on the user auth
-/// state
-Future<void> removeItemById(ProductID productId) async {
-  final cart = await _fetchCart();
-  final updated = cart.removeItemById(productId);
-  await _setCart(updated);
-}
+  Future<void> setItem(Item item) async {
+    final cart = await _fetchCart();
+    final updated = cart.setItem(item);
+    await _setCart(updated);
+  }
+
+  /// adds an item in the local or remote cart depending on the user auth state
+  Future<void> addItem(Item item) async {
+    final cart = await _fetchCart();
+    final updated = cart.addItem(item);
+    await _setCart(updated);
+  }
+
+  /// removes an item from the local or remote cart depending on the user auth
+  /// state
+  Future<void> removeItemById(ProductID productId) async {
+    final cart = await _fetchCart();
+    final updated = cart.removeItemById(productId);
+    await _setCart(updated);
+  }
 }
 
 final cartServiceProvider = Provider<CartService>((ref) {
-  return CartService(
-      authRepository: ref.watch(authRepositoryProvider),
-      localCartRepository: ref.watch(localCartRepositoryProvider),
-      remoteCartRepository: ref.watch(remoteCartRepositoryProvider));
+  return CartService(ref);
 });

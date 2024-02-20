@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:ecommerce_app/src/features/cart/data/local/local_cart_repository.dart';
 import 'package:ecommerce_app/src/features/cart/domain/cart.dart';
 import 'package:flutter/foundation.dart';
