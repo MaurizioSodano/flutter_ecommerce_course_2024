@@ -10,6 +10,7 @@ import 'package:ecommerce_app/src/constants/app_sizes.dart';
 import 'package:ecommerce_app/src/features/products/domain/product.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../application/cart_service.dart';
 import 'add_to_cart_controller.dart';
 
 /// A widget that shows an [ItemQuantitySelector] along with a [PrimaryButton]
@@ -22,8 +23,10 @@ class AddToCartWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.listen<AsyncValue<int>>(addToCartControllerProvider,
         (_, state) => state.showAlertDialogOnError(context));
-    final availableQuantity = product.availableQuantity;
+
+    final availableQuantity = ref.watch(itemAvailableQuantityProvider(product));
     final state = ref.watch(addToCartControllerProvider);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
