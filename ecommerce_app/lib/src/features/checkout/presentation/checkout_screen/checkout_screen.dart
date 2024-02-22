@@ -27,6 +27,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   final _controller = PageController();
 
   var _subRoute = CheckoutSubRoute.register;
+  // TODO: Load the correct initial page when this screen is presented
 
   @override
   void dispose() {
