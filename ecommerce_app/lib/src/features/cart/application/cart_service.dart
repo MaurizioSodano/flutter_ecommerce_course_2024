@@ -82,7 +82,7 @@ final cartItemsCountProvider = Provider<int>((ref) {
 
 final cartTotalProvider = Provider.autoDispose<double>((ref) {
   final cart = ref.watch(cartProvider).value ?? const Cart();
-  final productList = ref.watch(productListStreamProvider).value ?? [];
+  final productList = ref.watch(productsListStreamProvider).value ?? [];
   if (cart.items.isNotEmpty && productList.isNotEmpty) {
     var total = 0.0;
     for (final item in cart.items.entries) {

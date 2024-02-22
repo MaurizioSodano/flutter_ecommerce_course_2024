@@ -4,7 +4,6 @@ import 'package:ecommerce_app/src/features/authentication/data/auth_repository.d
 import 'package:ecommerce_app/src/features/authentication/domain/app_user.dart';
 import 'package:ecommerce_app/src/features/cart/domain/cart.dart';
 import 'package:ecommerce_app/src/features/cart/domain/mutable_cart.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../products/data/fake_products_repository.dart';

@@ -47,7 +47,7 @@ final productsRepositoryProvider = Provider<FakeProductsRepository>((ref) {
   return FakeProductsRepository();
 });
 
-final productListStreamProvider =
+final productsListStreamProvider =
     StreamProvider.autoDispose<List<Product>>((ref) {
   final productRepository = ref.watch(productsRepositoryProvider);
   return productRepository.watchProductsList();
