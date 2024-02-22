@@ -35,7 +35,7 @@ void main() {
   test('fetchProductsList returns global list', () async {
     final productsRepository = makeProductsRepository();
     expect(
-      await productsRepository.fetchProductList(),
+      await productsRepository.fetchProductsList(),
       kTestProducts,
     );
   });

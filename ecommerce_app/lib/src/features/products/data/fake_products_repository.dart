@@ -20,7 +20,7 @@ class FakeProductsRepository {
     return _getProduct(_products, id);
   }
 
-  Future<List<Product>> fetchProductList() async {
+  Future<List<Product>> fetchProductsList() async {
     await delay(addDelay);
     return Future.value(_products);
   }
@@ -56,7 +56,7 @@ final productListStreamProvider =
 final productListFutureProvider =
     FutureProvider.autoDispose<List<Product>>((ref) {
   final productRepository = ref.watch(productsRepositoryProvider);
-  return productRepository.fetchProductList();
+  return productRepository.fetchProductsList();
 });
 
 final productProvider =
