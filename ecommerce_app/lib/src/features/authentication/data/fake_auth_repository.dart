@@ -1,4 +1,4 @@
-import 'package:ecommerce_app/src/localization/string_hardcoded.dart';
+import 'package:ecommerce_app/src/exceptions/app_exception.dart';
 import 'package:ecommerce_app/src/utils/in_memory_store.dart';
 
 import '../../../utils/delay.dart';
@@ -16,6 +16,7 @@ class FakeAuthRepository implements AuthRepository {
   AppUser? get currentUser => _authState.value; // TODO: Update
   // List to keep track of all user accounts
   final List<FakeAppUser> _users = [];
+
   @override
   Future<void> signInWithEmailAndPassword(String email, String password) async {
     await delay(addDelay);
@@ -28,10 +29,10 @@ class FakeAuthRepository implements AuthRepository {
       }
       // same email, wrong password
       if (u.email == email && u.password != password) {
-        throw Exception('Wrong password'.hardcoded);
+        throw WrongPasswordException();
       }
     }
-    throw Exception('User not found'.hardcoded);
+    throw UserNotFoundException();
   }
 
   @override
@@ -41,14 +42,14 @@ class FakeAuthRepository implements AuthRepository {
     // check if the email is already in use
     for (final u in _users) {
       if (u.email == email) {
-        throw Exception('Email already in use'.hardcoded);
+        throw EmailAlreadyInUseException();
       }
     }
     // minimum password length requirement
     if (password.length < 8) {
-      throw Exception('Password is too weak'.hardcoded);
+      throw WeakPasswordException();
     }
-    _createNewUser(email,password);
+    _createNewUser(email, password);
   }
 
   @override
