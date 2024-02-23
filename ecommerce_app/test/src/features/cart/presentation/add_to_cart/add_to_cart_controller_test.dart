@@ -7,7 +7,7 @@ import 'package:mocktail/mocktail.dart';
 import '../../../../mocks.dart';
 
 void main() {
-const productId = '1';
+  const productId = '1';
   group('addItem', () {
     test('item added with quantity = 2, success', () async {
       // setup

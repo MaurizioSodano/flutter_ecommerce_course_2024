@@ -11,10 +11,12 @@ class Item {
   final int quantity;
 
   @override
-  bool operator ==(covariant Item other) {
+  bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other.productId == productId && other.quantity == quantity;
+    return other is Item &&
+        other.productId == productId &&
+        other.quantity == quantity;
   }
 
   @override

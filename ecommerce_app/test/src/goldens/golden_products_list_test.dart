@@ -12,7 +12,7 @@ void main() {
     const Size(1000, 1000),
   });
   testWidgets(
-    'Golden - product list',
+    'Golden - products list',
     (tester) async {
       final r = Robot(tester);
       final currentSize = sizeVariant.currentValue!;

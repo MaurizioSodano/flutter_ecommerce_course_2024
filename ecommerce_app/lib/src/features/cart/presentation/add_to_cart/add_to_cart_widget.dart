@@ -39,14 +39,11 @@ class AddToCartWidget extends ConsumerWidget {
               // let the user choose up to the available quantity or
               // 10 items at most
               maxQuantity: min(availableQuantity, 10),
-
               onChanged: state.isLoading
                   ? null
-                  : (quantity) {
-                      ref
-                          .read(addToCartControllerProvider.notifier)
-                          .updateQuantity(quantity);
-                    },
+                  : (quantity) => ref
+                      .read(addToCartControllerProvider.notifier)
+                      .updateQuantity(quantity),
             ),
           ],
         ),

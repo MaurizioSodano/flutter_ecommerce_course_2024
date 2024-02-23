@@ -1,4 +1,5 @@
 import 'package:ecommerce_app/src/common_widgets/alert_dialogs.dart';
+import 'package:ecommerce_app/src/common_widgets/custom_text_button.dart';
 import 'package:ecommerce_app/src/common_widgets/primary_button.dart';
 import 'package:ecommerce_app/src/features/authentication/data/auth_repository.dart';
 import 'package:ecommerce_app/src/features/authentication/data/fake_auth_repository.dart';
@@ -9,8 +10,6 @@ import 'package:ecommerce_app/src/features/products/presentation/home_app_bar/mo
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:go_router/go_router.dart';
 
 class AuthRobot {
   AuthRobot(this.tester);
@@ -23,27 +22,23 @@ class AuthRobot {
     await tester.pumpAndSettle();
   }
 
-  Future<void> pumpEmailPasswordSignInContents(
-      {required FakeAuthRepository authRepository,
-      required EmailPasswordSignInFormType formType,
-      VoidCallback? onSignedIn}) async {
-    await tester.pumpWidget(
+  Future<void> pumpEmailPasswordSignInContents({
+    required FakeAuthRepository authRepository,
+    required EmailPasswordSignInFormType formType,
+    VoidCallback? onSignedIn,
+  }) {
+    return tester.pumpWidget(
       ProviderScope(
         overrides: [
           authRepositoryProvider.overrideWithValue(authRepository),
         ],
-        child: MaterialApp.router(
-          routerConfig: GoRouter(initialLocation: '/', routes: [
-            GoRoute(
-              path: '/',
-              builder: (context, state) => Scaffold(
-                body: EmailPasswordSignInContents(
-                  formType: formType,
-                  onSignedIn: onSignedIn,
-                ),
-              ),
+        child: MaterialApp(
+          home: Scaffold(
+            body: EmailPasswordSignInContents(
+              formType: formType,
+              onSignedIn: onSignedIn,
             ),
-          ]),
+          ),
         ),
       ),
     );
@@ -56,20 +51,45 @@ class AuthRobot {
     await tester.pumpAndSettle();
   }
 
+  Future<void> tapFormToggleButton() async {
+    final toggleButton = find.byType(CustomTextButton);
+    expect(toggleButton, findsOneWidget);
+    await tester.tap(toggleButton);
+    await tester.pumpAndSettle();
+  }
+
   Future<void> enterEmail(String email) async {
-    final finder = find.byKey(EmailPasswordSignInScreen.emailKey);
-    expect(finder, findsOneWidget);
-    await tester.enterText(finder, email);
+    final emailField = find.byKey(EmailPasswordSignInScreen.emailKey);
+    expect(emailField, findsOneWidget);
+    await tester.enterText(emailField, email);
   }
 
   Future<void> enterPassword(String password) async {
-    final finder = find.byKey(EmailPasswordSignInScreen.passwordKey);
-    expect(finder, findsOneWidget);
-    await tester.enterText(finder, password);
+    final passwordField = find.byKey(EmailPasswordSignInScreen.passwordKey);
+    expect(passwordField, findsOneWidget);
+    await tester.enterText(passwordField, password);
   }
 
-  Future<void> signInWithEmailAndPassword() async {
+  void expectEmailAndPasswordFieldsFound() {
+    final emailField = find.byKey(EmailPasswordSignInScreen.emailKey);
+    expect(emailField, findsOneWidget);
+    final passwordField = find.byKey(EmailPasswordSignInScreen.passwordKey);
+    expect(passwordField, findsOneWidget);
+  }
+
+  void expectCreateAccountButtonFound() {
+    final dialogTitle = find.text('Create an account');
+    expect(dialogTitle, findsOneWidget);
+  }
+
+  void expectCreateAccountButtonNotFound() {
+    final dialogTitle = find.text('Create an account');
+    expect(dialogTitle, findsNothing);
+  }
+
+  Future<void> enterAndSubmitEmailAndPassword() async {
     await enterEmail('test@test.com');
+    await tester.pump();
     await enterPassword('test1234');
     await tapEmailAndPasswordSubmitButton();
   }
@@ -86,22 +106,18 @@ class AuthRobot {
       ProviderScope(
         overrides: [
           if (authRepository != null)
-            authRepositoryProvider.overrideWithValue(authRepository),
+            authRepositoryProvider.overrideWithValue(
+              authRepository,
+            )
         ],
-        child: MaterialApp.router(
-          routerConfig: GoRouter(initialLocation: '/', routes: [
-            GoRoute(
-              path: '/',
-              builder: (context, state) => const AccountScreen(),
-            ),
-          ]),
+        child: const MaterialApp(
+          home: AccountScreen(),
         ),
       ),
     );
   }
 
   Future<void> tapLogoutButton() async {
-    // find logout button and tap it
     final logoutButton = find.text('Logout');
     expect(logoutButton, findsOneWidget);
     await tester.tap(logoutButton);
@@ -109,13 +125,11 @@ class AuthRobot {
   }
 
   void expectLogoutDialogFound() {
-    // expect that the logout dialog is presented
     final dialogTitle = find.text('Are you sure?');
     expect(dialogTitle, findsOneWidget);
   }
 
   Future<void> tapCancelButton() async {
-    // find cancel button and tap it
     final cancelButton = find.text('Cancel');
     expect(cancelButton, findsOneWidget);
     await tester.tap(cancelButton);
@@ -124,12 +138,10 @@ class AuthRobot {
 
   void expectLogoutDialogNotFound() {
     final dialogTitle = find.text('Are you sure?');
-    // expect that the logout dialog is no longer visible
     expect(dialogTitle, findsNothing);
   }
 
   Future<void> tapDialogLogoutButton() async {
-    // find logout button and tap it
     final logoutButton = find.byKey(kDialogDefaultKey);
     expect(logoutButton, findsOneWidget);
     await tester.tap(logoutButton);
@@ -148,17 +160,6 @@ class AuthRobot {
 
   void expectCircularProgressIndicator() {
     final finder = find.byType(CircularProgressIndicator);
-    expect(finder, findsOne);
-  }
-
-//Find Widget by descendant
-  Future<void> tapDialogLogoutButton2() async {
-    final logoutButton = find.descendant(
-      of: find.byType(Dialog),
-      matching: find.text('Logout'),
-    );
-    expect(logoutButton, findsOneWidget);
-    await tester.tap(logoutButton);
-    await tester.pumpAndSettle();
+    expect(finder, findsOneWidget);
   }
 }

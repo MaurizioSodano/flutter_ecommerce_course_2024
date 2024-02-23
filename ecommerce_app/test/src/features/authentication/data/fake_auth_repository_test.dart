@@ -4,66 +4,72 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   const testEmail = 'test@test.com';
-  const testPassword = '1234';
+  const testPassword = 'test1234';
   final testUser = AppUser(
     uid: testEmail.split('').reversed.join(),
     email: testEmail,
   );
-  FakeAuthRepository makeAuthRepository() =>
-      FakeAuthRepository(addDelay: false);
+  FakeAuthRepository makeAuthRepository() => FakeAuthRepository(
+        addDelay: false,
+      );
   group('FakeAuthRepository', () {
-    test('current user is null', () {
+    test('currentUser is null', () {
       final authRepository = makeAuthRepository();
+      addTearDown(authRepository.dispose);
       expect(authRepository.currentUser, null);
       expect(authRepository.authStateChanges(), emits(null));
     });
 
-    test('currentUser is not null after sign in', () async {
+    test('sign in throws when user not found', () async {
       final authRepository = makeAuthRepository();
-      await authRepository.signInWithEmailAndPassword(
+      addTearDown(authRepository.dispose);
+      await expectLater(
+        () => authRepository.signInWithEmailAndPassword(
+          testEmail,
+          testPassword,
+        ),
+        throwsA(isA<Exception>()),
+      );
+      expect(authRepository.currentUser, null);
+      expect(authRepository.authStateChanges(), emits(null));
+    });
+
+    test('currentUser is not null after registration', () async {
+      final authRepository = makeAuthRepository();
+      addTearDown(authRepository.dispose);
+      await authRepository.createUserWithEmailAndPassword(
         testEmail,
         testPassword,
       );
       expect(authRepository.currentUser, testUser);
       expect(authRepository.authStateChanges(), emits(testUser));
     });
-    test('currentUser is null after registration', () async {
-      final authRepository = makeAuthRepository();
-      await authRepository.createUserWithEmailAndPassword(
-          testEmail, testPassword);
-      // in this example, we expect first
-      expect(authRepository.currentUser, testUser);
-      // and then we call the method under test
 
-      expect(
-        authRepository.authStateChanges(),
-        emits(testUser),
-      );
-    });
     test('currentUser is null after sign out', () async {
       final authRepository = makeAuthRepository();
-      await authRepository.signInWithEmailAndPassword(testEmail, testPassword);
-      // in this example, we expect first
-      expect(
-        authRepository.authStateChanges(),
-        emitsInOrder([
-          testUser, // latest value from signInWithEmailAndPassword()
-          null, // upcoming value from signOut()
-        ]),
+      addTearDown(authRepository.dispose);
+      await authRepository.createUserWithEmailAndPassword(
+        testEmail,
+        testPassword,
       );
-      // and then we call the method under test
+      expect(authRepository.currentUser, testUser);
+      expect(authRepository.authStateChanges(), emits(testUser));
+
       await authRepository.signOut();
       expect(authRepository.currentUser, null);
+      expect(authRepository.authStateChanges(), emits(null));
     });
 
-    test('sign in after dispose throws exception', () {
+    test('create user after dispose throws exception', () {
       final authRepository = makeAuthRepository();
       authRepository.dispose();
-
       expect(
-          () => authRepository.signInWithEmailAndPassword(
-              testEmail, testPassword),
-          throwsStateError);
+        () => authRepository.createUserWithEmailAndPassword(
+          testEmail,
+          testPassword,
+        ),
+        throwsStateError,
+      );
     });
   });
 }

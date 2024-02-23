@@ -5,10 +5,9 @@ import '../../../products/domain/product.dart';
 import '../../domain/item.dart';
 
 class ShoppingCartScreenController extends StateNotifier<AsyncValue<void>> {
-  final CartService cartService;
-
   ShoppingCartScreenController({required this.cartService})
       : super(const AsyncData(null));
+  final CartService cartService;
 
   Future<void> updateItemQuantity(ProductID productId, int quantity) async {
     state = const AsyncLoading();

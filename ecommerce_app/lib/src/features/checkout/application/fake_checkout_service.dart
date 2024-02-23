@@ -28,6 +28,7 @@ class FakeCheckoutService {
     final uid = authRepository.currentUser!.uid;
     // 1. Get the cart object
     final cart = await remoteCartRepository.fetchCart(uid);
+    if (cart.items.isNotEmpty) {
     final total = _totalPrice(cart);
     // * If we want to make this code more testable, a DateTime builder
     // * should be injected as a dependency
@@ -48,6 +49,9 @@ class FakeCheckoutService {
     await ordersRepository.addOrder(uid, order);
     // 4. Empty the cart
     await remoteCartRepository.setCart(uid, const Cart());
+    } else {
+      throw StateError('Can\'t place an order if the cart is empty');
+    }
   }
 
   // Helper method to calculate the total price

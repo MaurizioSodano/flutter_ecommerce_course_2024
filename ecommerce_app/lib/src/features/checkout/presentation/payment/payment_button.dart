@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:ecommerce_app/src/common_widgets/primary_button.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'payment_button_contrtoller.dart';
+import 'payment_button_controller.dart';
 
 /// Button used to initiate the payment flow.
 class PaymentButton extends ConsumerWidget {

@@ -31,15 +31,16 @@ final goRouterProvider = Provider<GoRouter>((ref) {
 
   return GoRouter(
     initialLocation: '/',
-    debugLogDiagnostics: true,
+    debugLogDiagnostics: false,
     redirect: (context, state) {
       final isLoggedIn = authRepository.currentUser != null;
+      final path = state.uri.path;
       if (isLoggedIn) {
-        if (state.uri.path == '/signIn') {
+        if (path == '/signIn') {
           return '/';
         }
       } else {
-        if (state.uri.path == '/account' || state.uri.path == '/orders') {
+        if (path == '/account' || path == '/orders') {
           return '/';
         }
       }
