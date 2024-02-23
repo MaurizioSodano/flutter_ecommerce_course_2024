@@ -6,6 +6,7 @@ import 'package:ecommerce_app/src/features/cart/domain/cart.dart';
 import 'package:ecommerce_app/src/features/cart/domain/mutable_cart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../exceptions/error_logger.dart';
 import '../../products/data/fake_products_repository.dart';
 import '../data/local/local_cart_repository.dart';
 import '../data/remote/remote_cart_repository.dart';
@@ -28,30 +29,30 @@ class CartSyncService {
     });
   }
 
-/// moves all items from the local to the remote cart taking into account the
-/// available quantities
-Future<void> _moveItemsToRemoteCart(String uid) async {
-  try {
-    // Get the local cart data
-    final localCartRepository = ref.read(localCartRepositoryProvider);
-    final localCart = await localCartRepository.fetchCart();
-    if (localCart.items.isNotEmpty) {
-      // Get the remote cart data
-      final remoteCartRepository = ref.read(remoteCartRepositoryProvider);
-      final remoteCart = await remoteCartRepository.fetchCart(uid);
-      final localItemsToAdd =
-          await _getLocalItemsToAdd(localCart, remoteCart);
-      // Add all the local items to the remote cart
-      final updatedRemoteCart = remoteCart.addItems(localItemsToAdd);
-      // Write the updated remote cart data to the repository
-      await remoteCartRepository.setCart(uid, updatedRemoteCart);
-      // Remove all items from the local cart
-      await localCartRepository.setCart(const Cart());
+  /// moves all items from the local to the remote cart taking into account the
+  /// available quantities
+  Future<void> _moveItemsToRemoteCart(String uid) async {
+    try {
+      // Get the local cart data
+      final localCartRepository = ref.read(localCartRepositoryProvider);
+      final localCart = await localCartRepository.fetchCart();
+      if (localCart.items.isNotEmpty) {
+        // Get the remote cart data
+        final remoteCartRepository = ref.read(remoteCartRepositoryProvider);
+        final remoteCart = await remoteCartRepository.fetchCart(uid);
+        final localItemsToAdd =
+            await _getLocalItemsToAdd(localCart, remoteCart);
+        // Add all the local items to the remote cart
+        final updatedRemoteCart = remoteCart.addItems(localItemsToAdd);
+        // Write the updated remote cart data to the repository
+        await remoteCartRepository.setCart(uid, updatedRemoteCart);
+        // Remove all items from the local cart
+        await localCartRepository.setCart(const Cart());
+      }
+    } catch (e, st) {
+      ref.read(errorLoggerProvider).logError(e, st);
     }
-  } catch (e) {
-    // TODO: Handle error and/or rethrow
   }
-}
 
   Future<List<Item>> _getLocalItemsToAdd(
       Cart localCart, Cart remoteCart) async {
