@@ -10,6 +10,7 @@ import 'package:ecommerce_app/src/common_widgets/primary_button.dart';
 import 'package:ecommerce_app/src/constants/app_sizes.dart';
 import 'package:ecommerce_app/src/features/reviews/domain/review.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../products/domain/product.dart';
 
@@ -101,12 +102,13 @@ class _LeaveReviewFormState extends ConsumerState<LeaveReviewForm> {
           isLoading: state.isLoading,
           onPressed: state.isLoading || _rating == 0
               ? null
-              : () =>
-                  ref.read(leaveReviewControllerProvider.notifier).submitReview(
-                        productId: widget.productId,
-                        rating: _rating,
-                        comment: _controller.text,
-                      ),
+              : () => ref
+                  .read(leaveReviewControllerProvider.notifier)
+                  .submitReview(
+                      productId: widget.productId,
+                      rating: _rating,
+                      comment: _controller.text,
+                      onSuccess: context.pop),
         )
       ],
     );
