@@ -43,7 +43,7 @@ class LeaveReviewAction extends ConsumerWidget {
                     ref.watch(userReviewStreamProvider(productId));
                 return CustomTextButton(
                   text: reviewValue.value != null
-                      ? 'Update your review'.hardcoded
+                      ? 'Update review'.hardcoded
                       : 'Leave a review'.hardcoded,
                   style: Theme.of(context)
                       .textTheme
