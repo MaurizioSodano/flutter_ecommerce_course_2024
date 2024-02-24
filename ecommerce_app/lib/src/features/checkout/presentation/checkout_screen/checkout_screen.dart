@@ -1,10 +1,11 @@
 import 'package:ecommerce_app/src/features/authentication/data/auth_repository.dart';
 import 'package:ecommerce_app/src/features/authentication/presentation/sign_in/email_password_sign_in_screen.dart';
-import 'package:ecommerce_app/src/features/authentication/presentation/sign_in/email_password_sign_in_state.dart';
 import 'package:ecommerce_app/src/features/checkout/presentation/payment/payment_page.dart';
 import 'package:ecommerce_app/src/localization/string_hardcoded.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../authentication/presentation/sign_in/email_password_sign_in_form_type.dart';
 
 /// The two sub-routes that are presented as part of the checkout flow.
 enum CheckoutSubRoute { register, payment }
