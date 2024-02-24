@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:ecommerce_app/src/features/products/data/fake_products_repository.dart';
 import 'package:ecommerce_app/src/features/products/presentation/products_list/product_card.dart';
 import 'package:ecommerce_app/src/localization/string_hardcoded.dart';
 import 'package:ecommerce_app/src/routing/app_router.dart';
