@@ -12,6 +12,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../common_widgets/async_value_widget.dart';
 import '../../domain/product.dart';
+import 'products_search_state_provider.dart';
 
 /// A widget that displays the list of products that match the search query.
 class ProductsGrid extends ConsumerWidget {
@@ -19,7 +20,7 @@ class ProductsGrid extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productsListValue = ref.watch(productsListStreamProvider);
+    final productsListValue = ref.watch(productsSearchResultsProvider);
     return AsyncValueWidget<List<Product>>(
       value: productsListValue,
       data: (products) => products.isEmpty
